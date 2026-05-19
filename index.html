@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5"/>
+<title>تحليل دوائر التيار المتناوب · الجامعة التقنية الوسطى</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;700&family=Orbitron:wght@600;700;900&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0a0500;--bg2:#120800;--or:#ff6b35;--gold:#f59e0b;--c:#00e5ff;--g:#00ff87;--pur:#7c3aed;--bd:rgba(255,255,255,.07)}
+html{scroll-behavior:smooth;color-scheme:dark}
+body{background:var(--bg);color:#e2e8f0;font-family:'Tajawal',sans-serif;overflow-x:hidden}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:rgba(255,107,53,.35);border-radius:4px}
+.gbg{background-image:linear-gradient(rgba(255,107,53,.022) 1px,transparent 1px),linear-gradient(90deg,rgba(255,107,53,.022) 1px,transparent 1px);background-size:50px 50px}
+
+/* UNI */
+.uni{background:linear-gradient(135deg,rgba(255,107,53,.07),rgba(245,158,11,.04));border-bottom:1px solid rgba(255,107,53,.2);padding:10px 20px;text-align:center}
+.un{font-family:'Orbitron',monospace;font-size:clamp(9px,1.5vw,13px);font-weight:700;color:var(--or);letter-spacing:.04em}
+.uc{font-size:clamp(9px,1.3vw,12px);color:rgba(255,255,255,.55);margin:2px 0}
+.ud{font-size:clamp(9px,1.2vw,11px);color:var(--gold)}
+.udiv{width:48px;height:1px;background:linear-gradient(90deg,transparent,var(--or),transparent);margin:4px auto}
+
+/* STUDENTS */
+.stu{background:rgba(255,107,53,.03);border-bottom:1px solid var(--bd);padding:6px 0;overflow:hidden;white-space:nowrap}
+.sin{display:inline-flex;gap:16px;animation:sc 20s linear infinite}
+.sin:hover{animation-play-state:paused}
+@keyframes sc{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.chip{display:inline-flex;align-items:center;gap:5px;font-size:12px;color:rgba(255,255,255,.43);padding:2px 10px;border:1px solid rgba(255,107,53,.15);border-radius:9999px}
+.chip em{color:var(--or);font-style:normal;font-size:10px}
+
+/* DEVICE */
+.dbar{background:rgba(255,255,255,.02);border-bottom:1px solid var(--bd);padding:5px 16px;display:flex;align-items:center;justify-content:flex-end;gap:6px}
+.dbtn{padding:3px 9px;border-radius:7px;border:1px solid var(--bd);background:transparent;color:rgba(255,255,255,.3);font-size:11px;cursor:pointer;transition:.18s}
+.dbtn.on,.dbtn:hover{border-color:rgba(255,107,53,.4);color:var(--or);background:rgba(255,107,53,.07)}
+
+/* NAV */
+.nav{position:sticky;top:0;z-index:50;background:rgba(10,5,0,.97);backdrop-filter:blur(20px);border-bottom:1px solid var(--bd)}
+.ni{max-width:1200px;margin:0 auto;padding:0 14px;display:flex;align-items:center;justify-content:space-between;height:50px;gap:10px}
+.nl{font-family:'Orbitron',monospace;font-size:13px;color:var(--or);display:flex;align-items:center;gap:8px}
+.nlic{width:31px;height:31px;border-radius:9px;background:rgba(255,107,53,.1);border:1px solid rgba(255,107,53,.35);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--or)}
+.nts{display:flex;gap:1px;overflow-x:auto;scrollbar-width:none}
+.nts::-webkit-scrollbar{display:none}
+.nt{padding:7px 13px;border-radius:9px;border:none;background:transparent;color:rgba(255,255,255,.43);font-family:'Tajawal',sans-serif;font-size:13px;cursor:pointer;transition:.18s;white-space:nowrap}
+.nt.on,.nt:hover{background:rgba(255,107,53,.1);color:var(--or)}
+
+/* PAGES */
+.pg{display:none;min-height:calc(100vh - 180px)}.pg.on{display:block}
+.w{max-width:1200px;margin:0 auto;padding:0 14px}
+
+/* HERO */
+.hero{padding:64px 16px 48px;text-align:center;background:radial-gradient(ellipse 80% 50% at 50% 0%,rgba(255,107,53,.07),transparent)}
+.hb{display:inline-flex;align-items:center;gap:7px;padding:5px 15px;border:1px solid rgba(255,107,53,.35);background:rgba(255,107,53,.07);border-radius:9999px;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--or);margin-bottom:20px}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--gold);animation:pd 2s ease-in-out infinite}
+@keyframes pd{0%,100%{opacity:1}50%{opacity:.3}}
+.hero h1{font-family:'Orbitron',monospace;font-size:clamp(1.7rem,5vw,3.5rem);font-weight:900;line-height:1.1;margin-bottom:14px}
+.grad{background:linear-gradient(135deg,#ff6b35,#f59e0b,#ff6b35);background-size:200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:ga 4s linear infinite}
+@keyframes ga{0%{background-position:0%}100%{background-position:200%}}
+.hp{max-width:620px;margin:0 auto 28px;color:rgba(255,255,255,.5);font-size:15px;line-height:1.8}
+.hbtns{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.bp{padding:12px 26px;background:linear-gradient(135deg,#ff6b35,#e85d2c);border:none;border-radius:12px;color:#fff;font-family:'Tajawal',sans-serif;font-weight:700;font-size:14px;cursor:pointer;transition:.2s}
+.bp:hover{box-shadow:0 0 32px rgba(255,107,53,.5);transform:translateY(-2px)}
+.bs{padding:12px 26px;background:rgba(255,107,53,.08);border:1px solid rgba(255,107,53,.35);border-radius:12px;color:var(--or);font-family:'Tajawal',sans-serif;font-weight:600;font-size:14px;cursor:pointer;transition:.2s}
+.bs:hover{box-shadow:0 0 22px rgba(255,107,53,.3);transform:translateY(-2px)}
+
+/* CARDS */
+.qcg{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px;padding-bottom:48px}
+.qc{background:rgba(18,8,0,.75);border:1px solid var(--bd);border-radius:16px;padding:20px;cursor:pointer;transition:.22s}
+.qc:hover{border-color:rgba(255,107,53,.22);transform:translateY(-3px);box-shadow:0 14px 36px rgba(0,0,0,.4)}
+.qci{font-size:24px;margin-bottom:9px}.qct{font-family:'Orbitron',monospace;font-size:12px;margin-bottom:5px}.qcd{font-size:12px;color:rgba(255,255,255,.4);line-height:1.5}
+.card{background:rgba(18,8,0,.75);border:1px solid var(--bd);border-radius:17px;backdrop-filter:blur(14px)}
+.sh{text-align:center;padding:48px 16px 32px}
+.sb{display:inline-flex;align-items:center;gap:5px;padding:4px 13px;border:1px solid rgba(255,107,53,.28);background:rgba(255,107,53,.05);border-radius:9999px;font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--or);margin-bottom:11px}
+.st{font-family:'Orbitron',monospace;font-size:clamp(1.3rem,3.5vw,2.1rem);font-weight:900;color:#fff;margin-bottom:9px}
+.ss{color:rgba(255,255,255,.43);font-size:14px;max-width:540px;margin:0 auto;line-height:1.7}
+
+/* THEORY */
+.ctabs,.ltabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:18px}
+.ct,.lt{padding:7px 15px;border-radius:10px;border:1px solid var(--bd);background:rgba(255,255,255,.02);color:rgba(255,255,255,.44);font-family:'Tajawal',sans-serif;font-size:13px;cursor:pointer;transition:.16s}
+.ct.on,.lt.on{border-color:rgba(255,107,53,.4);background:rgba(255,107,53,.08);color:var(--or)}
+.cc,.lc{display:none}.cc.on,.lc.on{display:block}
+.ttl{font-family:'Orbitron',monospace;font-size:15px;color:var(--or);margin-bottom:15px;padding-bottom:10px;border-bottom:1px solid var(--bd)}
+.tb{color:rgba(255,255,255,.76);font-size:14px;line-height:1.9}
+.tb h4{color:var(--gold);margin:17px 0 7px;font-size:14px;font-weight:700}
+.fm{font-family:'JetBrains Mono',monospace;background:rgba(255,107,53,.06);border:1px solid rgba(255,107,53,.15);border-radius:9px;padding:12px 15px;margin:10px 0;color:var(--or);font-size:12px;direction:ltr;text-align:left;white-space:pre-wrap;overflow-x:auto}
+.nb{background:rgba(0,255,135,.05);border:1px solid rgba(0,255,135,.18);border-radius:10px;padding:12px 15px;margin:13px 0;color:rgba(0,255,135,.9);font-size:13px;line-height:1.6}
+.wb{background:rgba(255,107,53,.05);border:1px solid rgba(255,107,53,.18);border-radius:10px;padding:12px 15px;margin:13px 0;color:rgba(255,107,53,.88);font-size:13px}
+table.tt{width:100%;border-collapse:collapse;margin:13px 0;font-family:'JetBrains Mono',monospace;font-size:12px;direction:ltr}
+table.tt th{background:rgba(255,107,53,.1);color:var(--or);padding:8px 13px;border:1px solid rgba(255,107,53,.2);text-align:center}
+table.tt td{padding:6px 13px;border:1px solid var(--bd);text-align:center;color:rgba(255,255,255,.65)}
+table.tt td.h{color:var(--gold);font-weight:700}table.tt td.l{color:rgba(255,255,255,.22)}
+
+/* INPUTS */
+.inp{width:100%;padding:10px 13px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:11px;color:#fff;font-family:'Tajawal',sans-serif;font-size:14px;outline:none;transition:.2s}
+.inp:focus{border-color:rgba(255,107,53,.4)}
+.im{font-family:'JetBrains Mono',monospace;direction:ltr;text-align:left}
+.sel{padding:9px 12px;background:var(--bg2);border:1px solid var(--bd);border-radius:10px;color:#fff;font-family:'Tajawal',sans-serif;font-size:13px;cursor:pointer}
+.br{padding:10px 20px;background:linear-gradient(135deg,var(--or),#e85d2c);border:none;border-radius:11px;color:#fff;font-family:'Tajawal',sans-serif;font-weight:700;font-size:14px;cursor:pointer;transition:.2s}
+.br:hover{box-shadow:0 0 20px rgba(255,107,53,.5)}
+
+/* SOLVER OUTPUT */
+.step-panel{background:rgba(0,0,0,.35);border:1px solid rgba(255,107,53,.12);border-radius:12px;padding:16px;margin-top:14px}
+.step-title{font-family:'Orbitron',monospace;font-size:11px;color:var(--gold);letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px}
+.step-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:13px}
+.step-row:last-child{border-bottom:none}
+.step-key{color:rgba(255,255,255,.5);font-family:'JetBrains Mono',monospace;font-size:12px}
+.step-val{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:var(--or)}
+.step-val.hi{color:var(--gold)}.step-val.res{color:var(--g)}
+.formula-tag{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:7px;background:rgba(255,107,53,.08);border:1px solid rgba(255,107,53,.18);font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--or);margin:2px}
+
+/* PHASOR / WAVEFORM CANVAS */
+.canvas-wrap{background:#020810;border:1px solid rgba(255,107,53,.18);border-radius:12px;overflow:hidden}
+canvas{display:block;width:100%}
+.phasor-legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:8px}
+.pl-item{display:flex;align-items:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(255,255,255,.55)}
+.pl-dot{width:10px;height:3px;border-radius:2px}
+
+/* CIRCUIT ANIM */
+.circ-svg{width:100%;height:240px;background:#020810;border:1px solid rgba(255,107,53,.18);border-radius:12px;margin-top:12px}
+
+/* SLIDERS */
+.sl-row{display:flex;align-items:center;gap:10px;margin-bottom:9px}
+.sl-lbl{font-family:'JetBrains Mono',monospace;font-size:12px;color:rgba(255,255,255,.55);width:80px;flex-shrink:0}
+.sl-inp{flex:1;height:4px;appearance:none;background:rgba(255,255,255,.1);border-radius:9999px;cursor:pointer}
+.sl-inp::-webkit-slider-thumb{appearance:none;width:16px;height:16px;border-radius:50%;background:var(--or);cursor:pointer}
+.sl-val{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--or);width:64px;text-align:right;flex-shrink:0}
+.res-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;margin-top:12px}
+.res-chip{background:rgba(255,255,255,.03);border:1px solid var(--bd);border-radius:10px;padding:10px;text-align:center}
+.res-chip .rv{font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;color:var(--or)}
+.res-chip .rl{font-size:10px;color:rgba(255,255,255,.3);margin-top:2px}
+.badge-res{padding:8px 12px;border-radius:10px;text-align:center;font-size:13px;font-weight:700;transition:.3s}
+.badge-res.ind{background:rgba(0,229,255,.08);border:1px solid rgba(0,229,255,.22);color:var(--c)}
+.badge-res.cap{background:rgba(0,255,135,.08);border:1px solid rgba(0,255,135,.22);color:var(--g)}
+.badge-res.res-state{background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.4);color:var(--gold);animation:rp 1.5s ease-in-out infinite}
+@keyframes rp{0%,100%{box-shadow:0 0 8px rgba(245,158,11,.3)}50%{box-shadow:0 0 24px rgba(245,158,11,.7)}}
+
+/* EXAM */
+.dgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:18px}
+@media(max-width:480px){.dgrid{grid-template-columns:1fr}}
+.dc{padding:17px;border-radius:14px;border:1px solid var(--bd);background:rgba(255,255,255,.02);cursor:pointer;transition:.2s;text-align:right}
+.dc:hover{transform:translateY(-2px)}.dc .dn{font-family:'Orbitron',monospace;font-size:13px;font-weight:700;margin-bottom:5px}.dc .dd{font-size:12px;color:rgba(255,255,255,.37);line-height:1.5}
+.dc.e{border-color:rgba(0,255,135,.22)}.dc.e:hover{border-color:var(--g)}.dc.e .dn{color:var(--g)}
+.dc.m{border-color:rgba(255,107,53,.22)}.dc.m:hover{border-color:var(--or)}.dc.m .dn{color:var(--or)}
+.dc.h{border-color:rgba(245,158,11,.22)}.dc.h:hover{border-color:var(--gold)}.dc.h .dn{color:var(--gold)}
+.dc.x{border-color:rgba(124,58,237,.22)}.dc.x:hover{border-color:var(--pur)}.dc.x .dn{color:var(--pur)}
+.qw{display:none}
+.qtop{display:flex;align-items:center;justify-content:space-between;margin-bottom:15px}
+.qi{font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(255,255,255,.36)}
+.tim{font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:700;color:rgba(255,255,255,.53)}
+.tim.urg{color:var(--or)}
+.prg{height:4px;background:rgba(255,255,255,.07);border-radius:9999px;margin-bottom:18px;overflow:hidden}
+.pb{height:100%;background:linear-gradient(90deg,var(--or),var(--gold));border-radius:9999px;transition:width .35s}
+.qtxt{font-size:16px;font-weight:600;color:#fff;line-height:1.6;margin-bottom:20px}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{padding:13px 15px;border:1px solid rgba(255,255,255,.07);border-radius:12px;background:rgba(255,255,255,.02);cursor:pointer;font-family:'Tajawal',sans-serif;font-size:14px;color:rgba(255,255,255,.76);text-align:right;transition:.15s}
+.opt:hover:not([disabled]){border-color:rgba(255,107,53,.3);background:rgba(255,107,53,.04)}
+.opt.cor{border-color:var(--g)!important;background:rgba(0,255,135,.07)!important;color:var(--g)!important}
+.opt.wrg{border-color:var(--or)!important;background:rgba(255,107,53,.07)!important;color:var(--or)!important}
+.expl{background:rgba(255,255,255,.02);border:1px solid var(--bd);border-radius:11px;padding:13px 15px;margin-top:13px;font-size:13px;color:rgba(255,255,255,.58);line-height:1.7;display:none}
+.expl.on{display:block}
+.nxb{margin-top:15px;padding:11px 24px;background:linear-gradient(135deg,var(--or),#e85d2c);border:none;border-radius:11px;color:#fff;font-family:'Tajawal',sans-serif;font-weight:700;font-size:13px;cursor:pointer;display:none}
+.nxb.on{display:inline-flex;align-items:center;gap:6px}
+.rswrap{display:none;text-align:center;padding:42px 20px}.rswrap.on{display:block}
+.rsbig{font-family:'Orbitron',monospace;font-size:55px;font-weight:900;background:linear-gradient(135deg,var(--or),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin:11px 0}
+.rsmsg{color:rgba(255,255,255,.43);font-size:15px;margin-bottom:24px}
+
+/* AI CHAT */
+.chatb{border:1px solid rgba(255,107,53,.2);border-radius:17px;overflow:hidden;display:flex;flex-direction:column;height:490px;background:rgba(10,5,0,.92)}
+.chh{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--bd);background:rgba(255,255,255,.01)}
+.aic{width:33px;height:33px;border-radius:10px;background:rgba(255,107,53,.1);border:1px solid rgba(255,107,53,.28);display:flex;align-items:center;justify-content:center;font-size:14px}
+.ain{font-family:'Orbitron',monospace;font-size:12px;color:var(--or)}
+.ais{font-size:10px;color:rgba(255,255,255,.3);display:flex;align-items:center;gap:3px;margin-top:1px}
+.dl{width:5px;height:5px;border-radius:50%;background:var(--g);animation:pd 2s infinite}
+.clb{padding:5px 10px;border-radius:7px;border:1px solid var(--bd);background:transparent;color:rgba(255,255,255,.3);font-family:'Tajawal',sans-serif;font-size:11px;cursor:pointer}
+.msgs{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:11px}
+.msg{max-width:86%}.msg.u{align-self:flex-end}.msg.a{align-self:flex-start}
+.bub{padding:10px 14px;font-size:13px;line-height:1.7}
+.msg.u .bub{background:rgba(255,107,53,.12);border:1px solid rgba(255,107,53,.2);border-radius:16px 16px 4px 16px;color:#fff}
+.msg.a .bub{background:rgba(18,8,0,.9);border:1px solid var(--bd);border-radius:4px 16px 16px 16px;color:rgba(255,255,255,.82)}
+[dir=rtl] .msg.u .bub{border-radius:16px 16px 16px 4px}
+[dir=rtl] .msg.a .bub{border-radius:16px 4px 16px 16px}
+.mm{font-size:9px;color:rgba(255,255,255,.22);margin-bottom:3px}
+.tds{display:flex;gap:3px;padding:3px 0}.td{width:7px;height:7px;border-radius:50%;background:var(--or);animation:td 1.4s ease-in-out infinite}
+.td:nth-child(2){animation-delay:.2s}.td:nth-child(3){animation-delay:.4s}
+@keyframes td{0%,60%,100%{transform:translateY(0);opacity:.35}30%{transform:translateY(-7px);opacity:1}}
+.sugs{display:flex;gap:5px;padding:8px 14px;border-top:1px solid var(--bd);overflow-x:auto;scrollbar-width:none}
+.sugs::-webkit-scrollbar{display:none}
+.sg{white-space:nowrap;padding:5px 10px;border-radius:17px;border:1px solid rgba(255,255,255,.09);background:transparent;color:rgba(255,255,255,.43);font-family:'Tajawal',sans-serif;font-size:11px;cursor:pointer;transition:.15s}
+.sg:hover{border-color:rgba(255,107,53,.3);color:var(--or)}
+.cinr{display:flex;gap:8px;padding:10px 14px;border-top:1px solid var(--bd)}
+.ci{flex:1;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:12px;padding:10px 13px;color:#fff;font-family:'Tajawal',sans-serif;font-size:13px;outline:none;transition:.18s;resize:none;max-height:68px}
+.ci:focus{border-color:rgba(255,107,53,.38)}
+.snb{width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,var(--or),#e85d2c);border:none;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;transition:.18s;flex-shrink:0}
+.snb:hover{box-shadow:0 0 16px rgba(255,107,53,.5)}.snb:disabled{opacity:.35;cursor:not-allowed}
+
+footer{text-align:center;padding:30px 14px;border-top:1px solid var(--bd);color:rgba(255,255,255,.16);font-size:12px;line-height:1.9}
+footer b{color:rgba(255,255,255,.33)}
+
+body.mv .w{padding:0 8px}
+@media(max-width:600px){.dgrid{grid-template-columns:1fr}.sl-row{flex-wrap:wrap}}
+</style>
+</head>
+<body class="gbg">
+
+<div class="uni">
+  <div class="un">🏛 الجامعة التقنية الوسطى</div>
+  <div class="udiv"></div>
+  <div class="uc">كلية البوليتكنك للتخصصات الهندسية</div>
+  <div class="ud">⚡ قسم تقنيات هندسة الإلكترونيك والذكاء الاصطناعي</div>
+</div>
+
+<div class="stu">
+  <div class="sin">
+    <div class="chip"><em>👨‍🎓</em>حسن محمد جاسم</div><div class="chip"><em>👨‍🎓</em>جعفر صبحي عبدالله</div>
+    <div class="chip"><em>👨‍🎓</em>علي نهاد قادر الياس</div><div class="chip"><em>👩‍🎓</em>فاطمة هيثم فاضل</div>
+    <div class="chip"><em>👩‍🎓</em>رؤى نديم كريم</div><div class="chip"><em>👩‍🎓</em>رقية احمد كاظم</div>
+    <div class="chip"><em>👨‍🎓</em>حسن محمد جاسم</div><div class="chip"><em>👨‍🎓</em>جعفر صبحي عبدالله</div>
+    <div class="chip"><em>👨‍🎓</em>علي نهاد قادر الياس</div><div class="chip"><em>👩‍🎓</em>فاطمة هيثم فاضل</div>
+    <div class="chip"><em>👩‍🎓</em>رؤى نديم كريم</div><div class="chip"><em>👩‍🎓</em>رقية احمد كاظم</div>
+  </div>
+</div>
+
+<div class="dbar">
+  <span style="font-size:11px;color:rgba(255,255,255,0.22)">عرض:</span>
+  <button class="dbtn" onclick="setDev('m',this)">📱 موبايل</button>
+  <button class="dbtn" onclick="setDev('t',this)">📟 تابلت</button>
+  <button class="dbtn on" onclick="setDev('d',this)">💻 لابتوب</button>
+</div>
+
+<nav class="nav">
+  <div class="ni">
+    <div class="nl"><div class="nlic">AC</div>AC Circuits</div>
+    <div class="nts">
+      <button class="nt on" onclick="go('home')">🏠</button>
+      <button class="nt" onclick="go('theory')">📘 النظري</button>
+      <button class="nt" onclick="go('lab')">🔬 المختبر</button>
+      <button class="nt" onclick="go('solver')">🧮 الحاسبة</button>
+      <button class="nt" onclick="go('exam')">📝 الامتحان</button>
+      <button class="nt" onclick="go('ai')">🤖 AI</button>
+    </div>
+  </div>
+</nav>
+
+<!-- HOME -->
+<div id="pg-home" class="pg on">
+  <div class="hero">
+    <div class="hb"><span class="dot"></span>AC Circuit Analysis · تحليل دوائر التيار المتناوب · 2025-2026</div>
+    <h1>تحليل دوائر<br><span class="grad">التيار المتناوب</span></h1>
+    <p class="hp">الممانعة، المتجهات الطورية، دوائر R-L-C، الرنين، والاستجابة الترددية — مع حاسبة تفاعلية تحل خطوة بخطوة وترسم الدائرة مع تدفق التيار</p>
+    <div class="hbtns">
+      <button class="bp" onclick="go('theory')">📖 ابدأ الدراسة</button>
+      <button class="bs" onclick="go('lab')">🔬 المحاكاة</button>
+      <button class="bs" onclick="go('solver')">🧮 حل المسائل</button>
+      <button class="bs" onclick="go('exam')">📝 الامتحان</button>
+    </div>
+  </div>
+  <div class="w" style="padding-bottom:48px">
+    <div class="qcg">
+      <div class="qc" onclick="go('theory')"><div class="qci">📘</div><div class="qct" style="color:var(--or)">النظري</div><div class="qcd">7 فصول: الممانعة، دوائر RLC، الرنين، الطاقة</div></div>
+      <div class="qc" onclick="go('lab')"><div class="qci">🔬</div><div class="qct" style="color:var(--gold)">محاكاة تفاعلية</div><div class="qcd">شاهد موجات V وI، اضبط المكونات، راقب الرنين</div></div>
+      <div class="qc" onclick="go('solver')"><div class="qci">🧮</div><div class="qct" style="color:var(--g)">حاسبة المسائل</div><div class="qcd">أدخل المعطيات → الحل خطوة بخطوة + رسم الدائرة</div></div>
+      <div class="qc" onclick="go('exam')"><div class="qci">📝</div><div class="qct" style="color:var(--pur)">الامتحان</div><div class="qcd">4 مستويات من الملزمة الرسمية Chapter 15</div></div>
+      <div class="qc" onclick="go('ai')"><div class="qci">🤖</div><div class="qct" style="color:var(--or)">مساعد AI</div><div class="qcd">Groq LLaMA متخصص يشرح ويحل خطوة بخطوة</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- THEORY -->
+<div id="pg-theory" class="pg">
+  <div class="sh"><div class="sb">📘 النظري</div><div class="st">AC Circuit Analysis</div><div class="ss">من الكتاب المرجعي — Chapter 15: Series and Parallel AC Circuits</div></div>
+  <div class="w" style="padding-bottom:50px">
+    <div class="ctabs">
+      <button class="ct on" onclick="shC('c1',this)">مقدمة وأساسيات</button>
+      <button class="ct" onclick="shC('c2',this)">الممانعة الحثية XL</button>
+      <button class="ct" onclick="shC('c3',this)">الممانعة السعوية XC</button>
+      <button class="ct" onclick="shC('c4',this)">دوائر R-L-C</button>
+      <button class="ct" onclick="shC('c5',this)">منقسم الجهد VDR</button>
+      <button class="ct" onclick="shC('c6',this)">الرنين والطاقة</button>
+      <button class="ct" onclick="shC('c7',this)">الدوائر التوازية</button>
+    </div>
+    <div class="card" style="padding:26px">
+      <div id="c1" class="cc on">
+        <div class="ttl">15.1 مقدمة — الممانعة في دوائر AC</div>
+        <div class="tb">
+          <h4>قانون أوم للتيار المتناوب</h4>
+          <div class="fm">V = I × Z       (الجهد = التيار × الممانعة)
+I = V / Z
+Z = V / I
+Z تُقاس بالأوم (Ω) وهي عدد مركّب</div>
+          <h4>أنواع الممانعة الثلاثة</h4>
+          <div class="fm">Z_R = R ∠0°       (مقاومة: V وI في نفس الطور)
+Z_L = X_L ∠+90°  (ملف: V يتقدم I بـ 90°)
+Z_C = X_C ∠-90°  (مكثّف: I يتقدم V بـ 90°)</div>
+          <h4>المقاومة النقية (R فقط)</h4>
+          <div class="fm">v = Vm·sin(ωt)  →  V = V∠0°
+I = V∠0° / R∠0° = (V/R)∠0°
+V وI متزامنان — زاوية الطور θ = 0°</div>
+          <div class="nb">📌 الفرق بين AC وDC: في AC الجهد والتيار يتغيران بشكل جيبي مع الزمن، لذا نستخدم المتجهات الطورية (Phasors)</div>
+          <h4>التحويل بين القيم الفعالة والذروة</h4>
+          <div class="fm">V_rms = V_m / √2 = 0.707 × V_m
+I_rms = I_m / √2 = 0.707 × I_m
+V_m = √2 × V_rms = 1.414 × V_rms</div>
+        </div>
+      </div>
+      <div id="c2" class="cc">
+        <div class="ttl">15.2 الممانعة الحثية — Inductive Reactance XL</div>
+        <div class="tb">
+          <h4>معادلة X_L</h4>
+          <div class="fm">X_L = ω·L = 2π·f·L     (أوم)
+Z_L = X_L ∠+90° = jX_L
+حيث: f = التردد (Hz), L = الحث الذاتي (Henry)</div>
+          <h4>علاقة X_L بالتردد</h4>
+          <div class="fm">X_L ∝ f    (كلما زاد التردد زاد X_L)
+عند f=0 (DC): X_L = 0 → الملف = سلك عادي
+عند f=∞:     X_L = ∞ → الملف = دائرة مفتوحة</div>
+          <h4>مثال حسابي</h4>
+          <div class="fm">X_L = 4Ω,  v = 24sin(ωt)V
+V_rms = 24/√2 = 16.97V ∠0°
+I = V/Z_L = 16.97∠0° / 4∠90° = 4.24A ∠-90°
+i = 4.24×√2 × sin(ωt-90°) = 6A·sin(ωt-90°)
+الملاحظة: التيار متأخر عن الجهد بـ 90°</div>
+          <div class="nb">💡 الملف يخزن الطاقة في المجال المغناطيسي — لا يستهلكها. القدرة الحقيقية للملف = صفر</div>
+        </div>
+      </div>
+      <div id="c3" class="cc">
+        <div class="ttl">15.3 الممانعة السعوية — Capacitive Reactance XC</div>
+        <div class="tb">
+          <h4>معادلة X_C</h4>
+          <div class="fm">X_C = 1/(ω·C) = 1/(2π·f·C)    (أوم)
+Z_C = X_C ∠-90° = -jX_C
+حيث: C = السعة الكهربائية (Farad)</div>
+          <h4>علاقة X_C بالتردد</h4>
+          <div class="fm">X_C ∝ 1/f   (كلما زاد التردد قلّ X_C)
+عند f=0 (DC): X_C = ∞ → المكثف = دائرة مفتوحة
+عند f=∞:     X_C = 0  → المكثف = سلك عادي</div>
+          <h4>مثال حسابي</h4>
+          <div class="fm">X_C = 2Ω,  i = 5sin(ωt+30°)A
+I_rms = 5/√2 = 3.54A ∠+30°
+V = I × Z_C = 3.54∠30° × 2∠-90° = 7.07V ∠-60°
+v = 10·sin(ωt-60°)V
+الملاحظة: التيار يتقدم الجهد بـ 90°</div>
+          <div class="nb">💡 المكثف يخزن الطاقة في المجال الكهربائي — لا يستهلكها. القدرة الحقيقية للمكثف = صفر</div>
+        </div>
+      </div>
+      <div id="c4" class="cc">
+        <div class="ttl">15.4 دوائر R-L-C التسلسلية</div>
+        <div class="tb">
+          <h4>الممانعة الكلية Z_T</h4>
+          <div class="fm">Z_T = R + j(X_L - X_C)    (شكل مستطيل)
+|Z_T| = √(R² + X_net²)    (مقدار الممانعة)
+θ = arctan(X_net / R)      (زاوية الطور)
+X_net = X_L - X_C          (الممانعة الصافية)</div>
+          <h4>مثال: دائرة R-L (R=3Ω, X_L=4Ω, E=100V∠0°)</h4>
+          <div class="fm">Z_T = 3+j4 = 5∠53.13° Ω
+I = E/Z_T = 100∠0° / 5∠53.13° = 20A ∠-53.13°
+V_R = I×R = 20∠-53.13° × 3∠0° = 60V ∠-53.13°
+V_L = I×X_L = 20∠-53.13° × 4∠90° = 80V ∠+36.87°
+تحقق: V_R² + V_L² = 60²+80² = 10000 = 100² ✓</div>
+          <h4>الطاقة والقدرة</h4>
+          <div class="fm">P  = I²·R = E·I·cos(θ)    [Watt]   — قدرة حقيقية
+Q  = I²·X_net              [VAR]    — قدرة خيالية
+S  = E·I = I²·Z_T          [VA]     — قدرة ظاهرية
+PF = cos(θ) = R/|Z_T|              — معامل القدرة
+S² = P² + Q²                       — مثلث القدرة</div>
+          <div class="nb">📌 من Chapter 15: مثلث القدرة مشابه لمثلث الممانعة: P=IR, Q=IX_net, S=IZ_T</div>
+        </div>
+      </div>
+      <div id="c5" class="cc">
+        <div class="ttl">15.5 قاعدة منقسم الجهد (VDR)</div>
+        <div class="tb">
+          <h4>قانون منقسم الجهد للتيار المتناوب</h4>
+          <div class="fm">V_x = (Z_x / Z_T) × E
+حيث:
+  V_x = الجهد على العنصر x
+  Z_x = ممانعة العنصر x (بشكل متجه)
+  Z_T = الممانعة الكلية (بشكل متجه)
+  E   = جهد المصدر</div>
+          <h4>مثال 1: دائرة R-C (R=3Ω, X_C=4Ω, E=100V∠0°)</h4>
+          <div class="fm">Z_T = 3-j4 = 5∠-53.13°
+V_R = (3∠0° / 5∠-53.13°) × 100 = 60V ∠+53.13°
+V_C = (4∠-90° / 5∠-53.13°) × 100 = 80V ∠-36.87°
+تحقق: V_R² + V_C² = 3600+6400 = 10000 = E² ✓</div>
+          <h4>مثال 2: دائرة R-L-C (R=6Ω, X_L=9Ω, X_C=17Ω, E=50V∠30°)</h4>
+          <div class="fm">X_net = 9-17 = -8Ω (سعوية)
+Z_T = 6-j8 = 10∠-53.13°
+I = 50∠30° / 10∠-53.13° = 5A ∠83.13°
+V_R = 5×6∠83.13° = 30V ∠83.13°
+V_L = 5×9∠(83.13°+90°) = 45V ∠173.13°
+V_C = 5×17∠(83.13°-90°) = 85V ∠-6.87°</div>
+        </div>
+      </div>
+      <div id="c6" class="cc">
+        <div class="ttl">15.6 الرنين والاستجابة الترددية</div>
+        <div class="tb">
+          <h4>شرط الرنين التسلسلي</h4>
+          <div class="fm">X_L = X_C           (شرط الرنين)
+ω_r·L = 1/(ω_r·C)
+ω_r = 1/√(L·C)    (rad/s)
+f_r = 1/(2π·√(L·C))  (Hz)</div>
+          <h4>خصائص دائرة الرنين التسلسلية</h4>
+          <div class="fm">عند الرنين:
+• Z_T = R    (أدنى ممانعة)
+• I_max = E/R  (أقصى تيار)
+• PF = 1      (cos 0° = 1)
+• θ = 0°      (V وI في نفس الطور)
+• V_L = V_C = Q×E  (قد تتجاوز E!)</div>
+          <h4>عامل الجودة Q</h4>
+          <div class="fm">Q = X_L/R = X_C/R = ω_r·L/R = 1/(ω_r·R·C)
+Q كبير → نطاق ترددي ضيق → تضخيم جهد أكبر
+عند الرنين: V_L = V_C = Q × E</div>
+          <h4>الاستجابة الترددية R-C</h4>
+          <div class="fm">f_c = 1/(2π·R·C)   (تردد الانقطاع)
+عند f = f_c: |H| = 1/√2 = 0.707 = -3dB</div>
+          <div class="wb">⚠️ تحذير: عند الرنين، جهد الملف والمكثف قد يتجاوز جهد المصدر بعامل Q! قد يُتلف المكونات.</div>
+        </div>
+      </div>
+      <div id="c7" class="cc">
+        <div class="ttl">15.7 الدوائر التوازية للتيار المتناوب</div>
+        <div class="tb">
+          <h4>تحليل الدوائر التوازية</h4>
+          <div class="fm">Z_T = (Z₁×Z₂)/(Z₁+Z₂)    (مكوّنان متوازيان)
+أو: 1/Z_T = 1/Z₁ + 1/Z₂ + ...
+قاعدة منقسم التيار:
+I_x = (Z_T / Z_x) × I_T</div>
+          <h4>المُقبولية Y (Admittance)</h4>
+          <div class="fm">Y = 1/Z = G + jB     (سيمنز)
+G = Conductance = R/|Z|²   (موصلية)
+B = Susceptance = -X/|Z|²  (إقبالية)
+B_L = -1/X_L (سالبة)   B_C = +1/X_C (موجبة)
+I_T = E × Y_T</div>
+          <h4>الرنين التوازي</h4>
+          <div class="fm">f_r = 1/(2π·√(LC))  (تقريباً)
+عند الرنين التوازي:
+• Z_T = L/(R·C) = أقصى ممانعة
+• I_T = أدنى تيار (عكس التسلسلي!)
+• التيارات الداخلية كبيرة جداً</div>
+          <div class="nb">📌 الرنين التسلسلي: Z_min, I_max | الرنين التوازي: Z_max, I_min — عكس تام!</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- LAB -->
+<div id="pg-lab" class="pg">
+  <div class="sh"><div class="sb">🔬 المحاكاة</div><div class="st">محاكي دوائر AC التفاعلي</div><div class="ss">اضبط المكونات وشاهد الموجات وتدفق التيار لحظة بلحظة</div></div>
+  <div class="w" style="padding-bottom:56px">
+    <div class="ltabs">
+      <button class="lt on" id="lt-osc" onclick="shL('osc',this)">📈 مذبذب الموجات</button>
+      <button class="lt" id="lt-ph" onclick="shL('ph',this)">🎯 المتجهات الطورية</button>
+      <button class="lt" id="lt-imp" onclick="shL('imp',this)">📊 الاستجابة الترددية</button>
+    </div>
+
+    <!-- OSCILLOSCOPE -->
+    <div id="lab-osc" class="lc on">
+      <div class="card" style="padding:22px">
+        <h3 style="font-family:'Orbitron',monospace;font-size:14px;color:var(--or);margin-bottom:16px">مذبذب الموجات + دائرة متحركة</h3>
+        <div style="display:grid;grid-template-columns:260px 1fr;gap:16px">
+          <div style="display:flex;flex-direction:column;gap:14px">
+            <div>
+              <div style="font-family:'Orbitron',monospace;font-size:10px;color:rgba(255,255,255,.3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px">نوع الدائرة</div>
+              <div style="display:flex;gap:6px;flex-wrap:wrap">
+                <button class="dbtn on" id="ct-rl" onclick="setCT('rl',this)">R-L</button>
+                <button class="dbtn" id="ct-rc" onclick="setCT('rc',this)">R-C</button>
+                <button class="dbtn" id="ct-rlc" onclick="setCT('rlc',this)">R-L-C</button>
+              </div>
+            </div>
+            <div>
+              <div style="font-family:'Orbitron',monospace;font-size:10px;color:rgba(255,255,255,.3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px">المعطيات</div>
+              <div class="sl-row"><span class="sl-lbl">Em (V)</span><input class="sl-inp" type="range" min="10" max="220" value="100" id="sEm" oninput="updSim()"><span class="sl-val" id="vEm">100V</span></div>
+              <div class="sl-row"><span class="sl-lbl">f (Hz)</span><input class="sl-inp" type="range" min="10" max="1000" value="60" id="sF" oninput="updSim()"><span class="sl-val" id="vF">60Hz</span></div>
+              <div class="sl-row"><span class="sl-lbl">R (Ω)</span><input class="sl-inp" type="range" min="1" max="200" value="10" id="sR" oninput="updSim()"><span class="sl-val" id="vR">10Ω</span></div>
+              <div class="sl-row" id="row-L"><span class="sl-lbl">L (mH)</span><input class="sl-inp" type="range" min="1" max="500" value="50" id="sL" oninput="updSim()"><span class="sl-val" id="vL">50mH</span></div>
+              <div class="sl-row" id="row-C" style="display:none"><span class="sl-lbl">C (μF)</span><input class="sl-inp" type="range" min="1" max="500" value="100" id="sC" oninput="updSim()"><span class="sl-val" id="vC">100μF</span></div>
+            </div>
+            <div class="res-grid" id="simRes"></div>
+            <div class="badge-res ind" id="simBadge">↑ حثية (XL > XC)</div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <!-- Circuit SVG -->
+            <svg id="acSvg" class="circ-svg" viewBox="0 0 520 190">
+              <defs>
+                <filter id="glo"><feGaussianBlur stdDeviation="2.5" result="c"/><feMerge><feMergeNode in="c"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+                <marker id="arr" markerWidth="7" markerHeight="7" refX="3.5" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#ff6b35" opacity=".8"/></marker>
+              </defs>
+              <!-- Source -->
+              <circle cx="48" cy="95" r="26" fill="none" stroke="#ff6b35" stroke-width="2" opacity=".75"/>
+              <text x="48" y="91" text-anchor="middle" fill="#ff6b35" font-family="JetBrains Mono" font-size="9">AC</text>
+              <text x="48" y="103" text-anchor="middle" fill="#ff6b35" font-family="JetBrains Mono" font-size="8" id="srcLbl">Em</text>
+              <!-- Top wire -->
+              <line x1="74" y1="75" x2="150" y2="75" stroke="rgba(255,107,53,.35)" stroke-width="2"/>
+              <!-- R box -->
+              <rect x="150" y="63" width="56" height="24" rx="4" fill="none" stroke="#ff6b35" stroke-width="2"/>
+              <text x="178" y="78" text-anchor="middle" fill="#ff6b35" font-family="JetBrains Mono" font-size="9" id="rLbl">R</text>
+              <line x1="206" y1="75" x2="265" y2="75" stroke="rgba(255,107,53,.35)" stroke-width="2"/>
+              <!-- L coil -->
+              <g id="elL"><path d="M265,75 Q275,55 285,75 Q295,55 305,75 Q315,55 325,75" fill="none" stroke="#00e5ff" stroke-width="2.5"/></g>
+              <!-- C capacitor -->
+              <g id="elC" style="display:none">
+                <line x1="265" y1="65" x2="265" y2="87" stroke="#00ff87" stroke-width="3"/>
+                <line x1="283" y1="65" x2="283" y2="87" stroke="#00ff87" stroke-width="3"/>
+              </g>
+              <line id="midWire" x1="325" y1="75" x2="430" y2="75" stroke="rgba(255,107,53,.35)" stroke-width="2"/>
+              <!-- Bottom return -->
+              <line x1="430" y1="75" x2="430" y2="118" stroke="rgba(255,107,53,.35)" stroke-width="2"/>
+              <line x1="430" y1="118" x2="48" y2="118" stroke="rgba(255,107,53,.35)" stroke-width="2"/>
+              <line x1="48" y1="118" x2="48" y2="121" stroke="rgba(255,107,53,.35)" stroke-width="2"/>
+              <!-- Animated particles -->
+              <circle id="ac1" r="5" fill="#ff6b35" opacity="0" filter="url(#glo)"><animateMotion id="am1" path="M74,75 L150,75" dur="0.4s" repeatCount="indefinite" begin="indefinite"/></circle>
+              <circle id="ac2" r="5" fill="#ff6b35" opacity="0" filter="url(#glo)"><animateMotion id="am2" path="M74,75 L150,75" dur="0.4s" begin="0.2s" repeatCount="indefinite"/></circle>
+              <circle id="ac3" r="5" fill="#00e5ff" opacity="0" filter="url(#glo)"><animateMotion id="am3" path="M206,75 L325,75" dur="0.5s" repeatCount="indefinite" begin="indefinite"/></circle>
+              <circle id="ac4" r="4" fill="#00e5ff" opacity="0" filter="url(#glo)"><animateMotion id="am4" path="M206,75 L325,75" dur="0.5s" begin="0.25s" repeatCount="indefinite"/></circle>
+              <circle id="ac5" r="5" fill="#ff6b35" opacity="0" filter="url(#glo)"><animateMotion id="am5" path="M430,75 L430,118 L48,118" dur="0.65s" repeatCount="indefinite" begin="indefinite"/></circle>
+              <!-- Labels -->
+              <text x="178" y="56" text-anchor="middle" fill="rgba(255,107,53,.5)" font-size="8" font-family="JetBrains Mono" id="rValLbl">10Ω</text>
+              <text x="295" y="55" text-anchor="middle" fill="rgba(0,229,255,.6)" font-size="8" font-family="JetBrains Mono" id="xLbl">XL</text>
+              <text x="430" y="64" text-anchor="middle" fill="rgba(255,107,53,.4)" font-size="8" font-family="JetBrains Mono">I→</text>
+              <text x="60" y="140" text-anchor="start" fill="rgba(255,255,255,.18)" font-size="8" font-family="JetBrains Mono">GND</text>
+            </svg>
+            <!-- Oscilloscope canvas -->
+            <div class="canvas-wrap">
+              <canvas id="oscCv" height="200"></canvas>
+            </div>
+            <div class="phasor-legend">
+              <div class="pl-item"><div class="pl-dot" style="background:#ff6b35"></div>V(t) — الجهد</div>
+              <div class="pl-item"><div class="pl-dot" style="background:#00ff87"></div>I(t) — التيار</div>
+              <div class="pl-item" id="legTheta"><div class="pl-dot" style="background:rgba(255,255,255,0.3)"></div>θ = 0°</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PHASOR DIAGRAM -->
+    <div id="lab-ph" class="lc">
+      <div class="card" style="padding:22px">
+        <h3 style="font-family:'Orbitron',monospace;font-size:14px;color:var(--gold);margin-bottom:14px">مخطط المتجهات الطورية (Phasor Diagram)</h3>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+          <div>
+            <div style="margin-bottom:12px;font-size:13px;color:rgba(255,255,255,.5)">أدخل قيم الدائرة لرسم المتجهات</div>
+            <div class="sl-row"><span class="sl-lbl">V (V)</span><input class="sl-inp" type="range" min="10" max="200" value="100" id="phV" oninput="drawPhasor()"><span class="sl-val" id="phVv">100V</span></div>
+            <div class="sl-row"><span class="sl-lbl">θ (°)</span><input class="sl-inp" type="range" min="-89" max="89" value="37" id="phTh" oninput="drawPhasor()"><span class="sl-val" id="phThv">37°</span></div>
+            <div class="sl-row"><span class="sl-lbl">I (A)</span><input class="sl-inp" type="range" min="1" max="50" value="20" id="phI" oninput="drawPhasor()"><span class="sl-val" id="phIv">20A</span></div>
+            <div style="margin-top:12px;background:rgba(255,107,53,.06);border:1px solid rgba(255,107,53,.15);border-radius:10px;padding:12px;font-family:'JetBrains Mono',monospace;font-size:12px;color:rgba(255,255,255,.6)" id="phInfo"></div>
+          </div>
+          <div class="canvas-wrap"><canvas id="phCv" height="280"></canvas></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FREQUENCY RESPONSE -->
+    <div id="lab-imp" class="lc">
+      <div class="card" style="padding:22px">
+        <h3 style="font-family:'Orbitron',monospace;font-size:14px;color:var(--g);margin-bottom:14px">الاستجابة الترددية — Frequency Response</h3>
+        <div style="display:grid;grid-template-columns:250px 1fr;gap:14px">
+          <div>
+            <div class="sl-row"><span class="sl-lbl">R (Ω)</span><input class="sl-inp" type="range" min="1" max="100" value="10" id="frR" oninput="drawFR()"><span class="sl-val" id="frRv">10Ω</span></div>
+            <div class="sl-row"><span class="sl-lbl">L (mH)</span><input class="sl-inp" type="range" min="1" max="500" value="50" id="frL" oninput="drawFR()"><span class="sl-val" id="frLv">50mH</span></div>
+            <div class="sl-row"><span class="sl-lbl">C (μF)</span><input class="sl-inp" type="range" min="1" max="500" value="100" id="frC" oninput="drawFR()"><span class="sl-val" id="frCv">100μF</span></div>
+            <div style="margin-top:12px;background:rgba(0,0,0,.3);border:1px solid rgba(255,107,53,.12);border-radius:10px;padding:12px;font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(255,255,255,.55)" id="frInfo"></div>
+          </div>
+          <div class="canvas-wrap"><canvas id="frCv" height="240"></canvas></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SOLVER -->
+<div id="pg-solver" class="pg">
+  <div class="sh"><div class="sb">🧮 الحاسبة</div><div class="st">حل المسائل خطوة بخطوة</div><div class="ss">أدخل المعطيات وستحصل على الحل الكامل مع القوانين المستخدمة</div></div>
+  <div class="w" style="max-width:900px;padding-bottom:56px">
+    <div class="card" style="padding:24px">
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;margin-bottom:18px">
+        <div>
+          <label style="font-size:11px;color:rgba(255,255,255,.38);display:block;margin-bottom:4px">نوع الدائرة</label>
+          <select class="sel" id="solType" style="width:100%" onchange="updSolFields()">
+            <option value="rl">R-L تسلسلي</option>
+            <option value="rc">R-C تسلسلي</option>
+            <option value="rlc">R-L-C تسلسلي</option>
+            <option value="rlp">R-L توازي</option>
+            <option value="rcp">R-C توازي</option>
+          </select>
+        </div>
+        <div>
+          <label style="font-size:11px;color:rgba(255,255,255,.38);display:block;margin-bottom:4px">E (V) — الجهد الذروة</label>
+          <input class="inp im" id="solE" value="100" placeholder="100"/>
+        </div>
+        <div>
+          <label style="font-size:11px;color:rgba(255,255,255,.38);display:block;margin-bottom:4px">f (Hz) — التردد</label>
+          <input class="inp im" id="solF" value="60" placeholder="60"/>
+        </div>
+        <div>
+          <label style="font-size:11px;color:rgba(255,255,255,.38);display:block;margin-bottom:4px">R (Ω)</label>
+          <input class="inp im" id="solR" value="10" placeholder="10"/>
+        </div>
+        <div id="solLDiv">
+          <label style="font-size:11px;color:rgba(255,255,255,.38);display:block;margin-bottom:4px">L (mH)</label>
+          <input class="inp im" id="solL" value="50" placeholder="50"/>
+        </div>
+        <div id="solCDiv" style="display:none">
+          <label style="font-size:11px;color:rgba(255,255,255,.38);display:block;margin-bottom:4px">C (μF)</label>
+          <input class="inp im" id="solC" value="100" placeholder="100"/>
+        </div>
+        <div>
+          <label style="font-size:11px;color:rgba(255,255,255,.38);display:block;margin-bottom:4px">زاوية E (°)</label>
+          <input class="inp im" id="solAng" value="0" placeholder="0"/>
+        </div>
+      </div>
+      <button class="br" onclick="solveProblem()">⚡ احسب وافسّر</button>
+
+      <div id="solOut" style="display:none;margin-top:18px">
+        <div style="font-family:'Orbitron',monospace;font-size:12px;color:var(--gold);margin-bottom:12px;letter-spacing:.08em">الحل التفصيلي خطوة بخطوة</div>
+        <div id="solSteps"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- EXAM -->
+<div id="pg-exam" class="pg">
+  <div class="sh"><div class="sb">📝 الامتحان</div><div class="st">اختبر فهمك</div><div class="ss">أسئلة من Chapter 15 — Series and Parallel AC Circuits</div></div>
+  <div class="w" style="max-width:780px;padding-bottom:50px">
+    <div class="card" id="eS" style="padding:34px;text-align:center">
+      <div style="font-size:46px;margin-bottom:13px">⚡</div>
+      <h3 style="font-family:'Orbitron',monospace;font-size:17px;color:var(--or);margin-bottom:7px">اختر المستوى</h3>
+      <p style="color:rgba(255,255,255,.38);margin-bottom:24px;font-size:13px">الأسئلة من الكتاب المرجعي — Chapter 15</p>
+      <div class="dgrid">
+        <div class="dc e" onclick="startE('e')"><div class="dn">🟢 سهل</div><div class="dd">مفاهيم الممانعة الأساسية — 45 ث</div></div>
+        <div class="dc m" onclick="startE('m')"><div class="dn">🟠 متوسط</div><div class="dd">حسابات Z_T والجهد — 60 ث</div></div>
+        <div class="dc h" onclick="startE('h')"><div class="dn">🟡 صعب</div><div class="dd">دوائر R-L-C والرنين — 75 ث</div></div>
+        <div class="dc x" onclick="startE('x')"><div class="dn">🟣 خبير</div><div class="dd">تحليل متكامل ومتجهات — 90 ث</div></div>
+      </div>
+    </div>
+    <div class="card qw" id="eA" style="padding:26px">
+      <div class="qtop"><div class="qi" id="qI"></div><div class="tim" id="tEl"></div></div>
+      <div class="prg"><div class="pb" id="pB" style="width:0%"></div></div>
+      <div class="qtxt" id="qT"></div>
+      <div class="opts" id="qO"></div>
+      <div class="expl" id="qEx"></div>
+      <button class="nxb" id="nxB" onclick="nextQ()">التالي →</button>
+    </div>
+    <div class="rswrap" id="eR">
+      <div style="font-size:50px;margin-bottom:11px">🏆</div>
+      <div class="rsbig" id="rBig"></div>
+      <div class="rsmsg" id="rMsg"></div>
+      <button class="bp" onclick="resetE()">إعادة الامتحان</button>
+    </div>
+  </div>
+</div>
+
+<!-- AI -->
+<div id="pg-ai" class="pg">
+  <div class="sh"><div class="sb">🤖 AI</div><div class="st">مساعد تحليل دوائر AC</div><div class="ss">Groq LLaMA 3.3 · يحل ويشرح خطوة بخطوة</div></div>
+  <div class="w" style="max-width:760px;padding-bottom:50px">
+    <div class="chatb">
+      <div class="chh">
+        <div style="display:flex;align-items:center;gap:9px">
+          <div class="aic">⚡</div>
+          <div><div class="ain">AC Circuit AI</div><div class="ais"><span class="dl"></span>Groq · متصل</div></div>
+        </div>
+        <button class="clb" onclick="clrC()">🗑 مسح</button>
+      </div>
+      <div class="msgs" id="msgs">
+        <div class="msg a"><div class="mm">⚡ AI</div><div class="bub">مرحباً! أنا مساعدك المتخصص في تحليل دوائر التيار المتناوب. يمكنني مساعدتك في: حساب الممانعة، دوائر R-L-C، الرنين، المتجهات الطورية، والقدرة. اطرح مسألتك وسأحلها خطوة بخطوة. ⚡</div></div>
+      </div>
+      <div class="sugs">
+        <button class="sg" onclick="sSug(this)">احسب Z_T لدائرة R=3Ω, XL=4Ω</button>
+        <button class="sg" onclick="sSug(this)">ما شرط الرنين التسلسلي؟</button>
+        <button class="sg" onclick="sSug(this)">ما الفرق بين قدرة P وQ وS؟</button>
+        <button class="sg" onclick="sSug(this)">احسب V_C لدائرة R=3Ω, XC=4Ω, E=100V</button>
+        <button class="sg" onclick="sSug(this)">ما هو معامل القدرة PF؟</button>
+      </div>
+      <div class="cinr">
+        <textarea class="ci" id="cIn" placeholder="اكتب مسألتك هنا..." rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sMsg()}"></textarea>
+        <button class="snb" id="snB" onclick="sMsg()">➤</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <b>الجامعة التقنية الوسطى</b> · كلية البوليتكنك للتخصصات الهندسية<br>
+  قسم تقنيات هندسة الإلكترونيك والذكاء الاصطناعي · تحليل دوائر التيار المتناوب 2025-2026<br>
+  <span style="color:rgba(255,255,255,.12)">حسن محمد جاسم · جعفر صبحي عبدالله · علي نهاد قادر الياس · فاطمة هيثم فاضل · رؤى نديم كريم · رقية احمد كاظم</span>
+</footer>
+
+<script>
+// ===== NAV =====
+function go(p){document.querySelectorAll('.pg').forEach(x=>x.classList.remove('on'));document.querySelectorAll('.nt').forEach(x=>x.classList.remove('on'));document.getElementById('pg-'+p).classList.add('on');['home','theory','lab','solver','exam','ai'].forEach((n,i)=>{if(n===p)document.querySelectorAll('.nt')[i].classList.add('on');});window.scrollTo({top:0,behavior:'smooth'});if(p==='lab'){setTimeout(()=>{updSim();drawPhasor();drawFR();},100);}}
+function setDev(d,btn){document.body.className='gbg';if(d==='m')document.body.classList.add('mv');document.querySelectorAll('.dbtn').forEach(b=>b.classList.remove('on'));btn.classList.add('on');}
+function shC(id,btn){document.querySelectorAll('.cc').forEach(x=>x.classList.remove('on'));document.querySelectorAll('.ct').forEach(x=>x.classList.remove('on'));document.getElementById(id).classList.add('on');btn.classList.add('on');}
+function shL(id,btn){document.querySelectorAll('.lc').forEach(x=>x.classList.remove('on'));document.querySelectorAll('.lt').forEach(x=>x.classList.remove('on'));document.getElementById('lab-'+id).classList.add('on');if(btn)btn.classList.add('on');setTimeout(()=>{if(id==='osc')updSim();if(id==='ph')drawPhasor();if(id==='imp')drawFR();},50);}
+
+// ===== OSCILLOSCOPE SIMULATOR =====
+let CT='rl';
+function setCT(t,btn){CT=t;document.querySelectorAll('.dbtn').forEach(b=>b.classList.remove('on'));btn.classList.add('on');document.getElementById('row-L').style.display=(t==='rc')?'none':'flex';document.getElementById('row-C').style.display=(t==='rl')?'none':'flex';document.getElementById('elL').style.display=(t==='rc')?'none':'block';document.getElementById('elC').style.display=(t==='rl')?'none':'block';updSim();}
+
+function updSim(){
+  const Em=+document.getElementById('sEm').value;
+  const f=+document.getElementById('sF').value;
+  const R=+document.getElementById('sR').value;
+  const L=+document.getElementById('sL').value*1e-3;
+  const C=+document.getElementById('sC').value*1e-6;
+  const w=2*Math.PI*f;
+  const XL=(CT!=='rc')?w*L:0;
+  const XC=(CT!=='rl')?(1/(w*C)):0;
+  const Xn=XL-XC;
+  const ZT=Math.sqrt(R*R+Xn*Xn);
+  const Erms=Em/Math.SQRT2;
+  const Irms=Erms/ZT;
+  const th=Math.atan2(Xn,R)*(180/Math.PI);
+  const PF=Math.cos(th*Math.PI/180);
+  const P=Erms*Irms*PF;
+  const frRes=1/(2*Math.PI*Math.sqrt(L*(CT==='rl'?L:C)));
+
+  document.getElementById('vEm').textContent=Em+'V';
+  document.getElementById('vF').textContent=f+'Hz';
+  document.getElementById('vR').textContent=R+'Ω';
+  document.getElementById('vL').textContent=document.getElementById('sL').value+'mH';
+  document.getElementById('vC').textContent=document.getElementById('sC').value+'μF';
+
+  document.getElementById('rValLbl').textContent=R+'Ω';
+  document.getElementById('xLbl').textContent=CT==='rc'?'XC='+XC.toFixed(1)+'Ω':'XL='+XL.toFixed(1)+'Ω';
+  document.getElementById('srcLbl').textContent=Em+'V';
+
+  const res=[
+    {l:'|Z_T| (Ω)',v:ZT.toFixed(2)},{l:'θ (°)',v:th.toFixed(1)},
+    {l:'I_rms (A)',v:Irms.toFixed(3)},{l:'PF',v:PF.toFixed(3)},
+    {l:'P (W)',v:P.toFixed(1)},{l:'V_R (V)',v:(Irms*R).toFixed(1)},
+    {l:'XL (Ω)',v:XL.toFixed(1)},{l:'XC (Ω)',v:XC.toFixed(1)},
+  ];
+  document.getElementById('simRes').innerHTML=res.map(r=>`<div class="res-chip"><div class="rv">${r.v}</div><div class="rl">${r.l}</div></div>`).join('');
+
+  const isRes=Math.abs(Xn)<2;
+  const badge=document.getElementById('simBadge');
+  if(isRes){badge.className='badge-res res-state';badge.textContent='⚡ رنين! XL = XC';}
+  else if(Xn>0){badge.className='badge-res ind';badge.textContent='↑ حثية (XL > XC)';}
+  else{badge.className='badge-res cap';badge.textContent='↓ سعوية (XC > XL)';}
+
+  document.getElementById('legTheta').innerHTML=`<div class="pl-dot" style="background:rgba(255,255,255,0.3)"></div>θ = ${th.toFixed(1)}°`;
+
+  // animate circuit particles
+  ['ac1','ac2','ac3','ac4','ac5'].forEach(id=>document.getElementById(id).setAttribute('opacity','1'));
+  ['am1','am2','am3','am4','am5'].forEach(id=>document.getElementById(id).beginElement?.());
+
+  drawOsc(Em,f,th*Math.PI/180,Irms*Math.SQRT2);
+}
+
+function drawOsc(Em,f,thRad,Im){
+  const cv=document.getElementById('oscCv');if(!cv)return;
+  cv.width=cv.offsetWidth||600;cv.height=200;
+  const ctx=cv.getContext('2d'),W=cv.width,H=cv.height;
+  ctx.fillStyle='#020810';ctx.fillRect(0,0,W,H);
+  // grid
+  ctx.strokeStyle='rgba(255,107,53,.07)';ctx.lineWidth=1;
+  for(let x=0;x<W;x+=W/8){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}
+  for(let y=0;y<H;y+=H/4){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+  ctx.strokeStyle='rgba(255,107,53,.18)';ctx.setLineDash([3,3]);ctx.beginPath();ctx.moveTo(0,H/2);ctx.lineTo(W,H/2);ctx.stroke();ctx.setLineDash([]);
+  // V wave
+  ctx.beginPath();ctx.strokeStyle='#ff6b35';ctx.lineWidth=2.5;
+  for(let x=0;x<W;x++){const t=(x/W)*4*Math.PI;const y=H/2-(Em/250)*(H/2-12)*Math.sin(t);x===0?ctx.moveTo(x,y):ctx.lineTo(x,y);}ctx.stroke();
+  // I wave
+  const sc=Math.min(Im/Em,1.2);
+  ctx.beginPath();ctx.strokeStyle='#00ff87';ctx.lineWidth=2;
+  for(let x=0;x<W;x++){const t=(x/W)*4*Math.PI;const y=H/2-(Em/250)*(H/2-12)*sc*Math.sin(t-thRad);x===0?ctx.moveTo(x,y):ctx.lineTo(x,y);}ctx.stroke();
+  // labels
+  ctx.font='10px JetBrains Mono';ctx.fillStyle='rgba(255,107,53,.8)';ctx.fillText('V(t)',7,16);ctx.fillStyle='rgba(0,255,135,.8)';ctx.fillText('I(t)',7,29);ctx.fillStyle='rgba(255,255,255,.25)';ctx.fillText(`Em=${Em}V`,W-70,16);
+}
+
+// ===== PHASOR DIAGRAM =====
+function drawPhasor(){
+  const V=+document.getElementById('phV').value;
+  const th=+document.getElementById('phTh').value;
+  const I=+document.getElementById('phI').value;
+  document.getElementById('phVv').textContent=V+'V';
+  document.getElementById('phThv').textContent=th+'°';
+  document.getElementById('phIv').textContent=I+'A';
+  const thR=th*Math.PI/180;
+  document.getElementById('phInfo').innerHTML=
+    `E = ${V}V ∠0°\nI = ${I}A ∠${-th}°\nZ = ${(V/(I||1)).toFixed(2)}Ω ∠${th}°\nPF = cos(${th}°) = ${Math.cos(thR).toFixed(3)}\nP  = ${(V/Math.SQRT2*I/Math.SQRT2*Math.cos(thR)).toFixed(1)}W`.replace(/\n/g,'<br>');
+  const cv=document.getElementById('phCv');if(!cv)return;
+  cv.width=cv.offsetWidth||280;cv.height=280;
+  const ctx=cv.getContext('2d'),W=cv.width,H=cv.height;
+  const cx=W/2,cy=H/2,scale=Math.min(cx,cy)-30;
+  ctx.fillStyle='#020810';ctx.fillRect(0,0,W,H);
+  // axes
+  ctx.strokeStyle='rgba(255,255,255,.1)';ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(0,cy);ctx.lineTo(W,cy);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(cx,0);ctx.lineTo(cx,H);ctx.stroke();
+  // V phasor
+  function arr(ex,ey,col,lbl){
+    ctx.strokeStyle=col;ctx.lineWidth=2.5;
+    ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+ex,cy-ey);ctx.stroke();
+    ctx.fillStyle=col;ctx.beginPath();
+    const a=Math.atan2(-ey,ex);const hs=10;
+    ctx.moveTo(cx+ex,cy-ey);ctx.lineTo(cx+ex-hs*Math.cos(a-0.4),cy-ey+hs*Math.sin(a-0.4));
+    ctx.lineTo(cx+ex-hs*Math.cos(a+0.4),cy-ey+hs*Math.sin(a+0.4));ctx.closePath();ctx.fill();
+    ctx.font='bold 11px JetBrains Mono';ctx.fillStyle=col;ctx.fillText(lbl,cx+ex+6,cy-ey);
+  }
+  arr(scale,0,'#ff6b35',`V=${V}V`);
+  arr(scale*Math.cos(-thR),scale*Math.sin(-thR),'#00ff87',`I=${I}A`);
+  ctx.font='10px JetBrains Mono';ctx.fillStyle='rgba(255,255,255,.3)';ctx.fillText('+Re',W-28,cy-5);ctx.fillText('+Im',cx+5,12);
+}
+
+// ===== FREQUENCY RESPONSE =====
+function drawFR(){
+  const R=+document.getElementById('frR').value;
+  const L=+document.getElementById('frL').value*1e-3;
+  const C=+document.getElementById('frC').value*1e-6;
+  document.getElementById('frRv').textContent=R+'Ω';
+  document.getElementById('frLv').textContent=document.getElementById('frL').value+'mH';
+  document.getElementById('frCv').textContent=document.getElementById('frC').value+'μF';
+  const fr=1/(2*Math.PI*Math.sqrt(L*C));
+  document.getElementById('frInfo').innerHTML=`f_r = ${fr.toFixed(1)} Hz<br>ω_r = ${(2*Math.PI*fr).toFixed(1)} rad/s<br>Q = ${((1/R)*Math.sqrt(L/C)).toFixed(2)}<br>BW = ${(fr/((1/R)*Math.sqrt(L/C))).toFixed(1)} Hz`;
+  const cv=document.getElementById('frCv');if(!cv)return;
+  cv.width=cv.offsetWidth||500;cv.height=240;
+  const ctx=cv.getContext('2d'),W=cv.width,H=cv.height;
+  ctx.fillStyle='#020810';ctx.fillRect(0,0,W,H);
+  ctx.strokeStyle='rgba(255,107,53,.06)';ctx.lineWidth=1;
+  for(let x=0;x<W;x+=W/8){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}
+  for(let y=0;y<H;y+=H/5){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+  // Z vs f plot
+  const fMin=1,fMax=2000;
+  ctx.beginPath();ctx.strokeStyle='#ff6b35';ctx.lineWidth=2;
+  for(let px=0;px<W;px++){
+    const f=Math.exp(Math.log(fMin)+(Math.log(fMax)-Math.log(fMin))*px/W);
+    const w=2*Math.PI*f;const XL=w*L;const XC=1/(w*C);const Z=Math.sqrt(R*R+(XL-XC)**2);
+    const y=H-Math.min((Z/500)*H*0.8,H-5);
+    px===0?ctx.moveTo(px,y):ctx.lineTo(px,y);
+  }ctx.stroke();
+  // resonance line
+  const frPx=(Math.log(fr)-Math.log(fMin))/(Math.log(fMax)-Math.log(fMin))*W;
+  ctx.strokeStyle='rgba(245,158,11,.6)';ctx.setLineDash([4,4]);ctx.lineWidth=1.5;
+  ctx.beginPath();ctx.moveTo(frPx,0);ctx.lineTo(frPx,H);ctx.stroke();ctx.setLineDash([]);
+  ctx.fillStyle='rgba(245,158,11,.8)';ctx.font='10px JetBrains Mono';ctx.fillText(`f_r=${fr.toFixed(0)}Hz`,frPx+4,14);
+  ctx.fillStyle='rgba(255,107,53,.7)';ctx.fillText('Z(Ω)',8,16);
+}
+
+// ===== SOLVER =====
+function updSolFields(){
+  const t=document.getElementById('solType').value;
+  document.getElementById('solLDiv').style.display=(t==='rcp')?'none':'block';
+  document.getElementById('solCDiv').style.display=(t==='rl'||t==='rlp')?'none':'block';
+}
+
+function solveProblem(){
+  const tp=document.getElementById('solType').value;
+  const Em=+document.getElementById('solE').value;
+  const f=+document.getElementById('solF').value;
+  const R=+document.getElementById('solR').value;
+  const L=+document.getElementById('solL').value*1e-3;
+  const C=+document.getElementById('solC').value*1e-6;
+  const ang=+document.getElementById('solAng').value;
+  const w=2*Math.PI*f;
+  const XL=(tp==='rc'||tp==='rcp')?0:w*L;
+  const XC=(tp==='rl'||tp==='rlp')?0:1/(w*C);
+  const Erms=Em/Math.SQRT2;
+  const Xn=XL-XC;
+  const ZT=Math.sqrt(R*R+Xn*Xn);
+  const th=Math.atan2(Xn,R)*(180/Math.PI);
+  const Irms=Erms/ZT;
+  const Im=Irms*Math.SQRT2;
+  const PF=Math.cos(th*Math.PI/180);
+  const P=Erms*Irms*PF;
+  const Q=Erms*Irms*Math.abs(Math.sin(th*Math.PI/180));
+  const S=Erms*Irms;
+  const VR=Irms*R,VL=Irms*XL,VC=Irms*XC;
+  const isSerial=!tp.endsWith('p');
+  const typeName={rl:'R-L تسلسلي',rc:'R-C تسلسلي',rlc:'R-L-C تسلسلي',rlp:'R-L توازي',rcp:'R-C توازي'}[tp];
+
+  const steps=[
+    {t:'المعطيات',rows:[
+      {k:'نوع الدائرة',v:typeName,cl:''},
+      {k:'Em',v:`${Em}V ∠${ang}°`,cl:''},
+      {k:'f',v:`${f} Hz`,cl:''},
+      {k:'R',v:`${R} Ω`,cl:''},
+      XL?{k:'L / XL',v:`${(L*1e3).toFixed(0)}mH / ${XL.toFixed(2)}Ω`,cl:''}:null,
+      XC?{k:'C / XC',v:`${(C*1e6).toFixed(0)}μF / ${XC.toFixed(2)}Ω`,cl:''}:null,
+    ].filter(Boolean)},
+    {t:'الخطوة 1 — حساب الممانعات',rows:[
+      XL?{k:'XL = 2π·f·L',v:`2π × ${f} × ${(L*1e3).toFixed(0)}e-3 = ${XL.toFixed(2)} Ω`,cl:''}:null,
+      XC?{k:'XC = 1/(2π·f·C)',v:`1/(2π×${f}×${(C*1e6).toFixed(0)}e-6) = ${XC.toFixed(2)} Ω`,cl:''}:null,
+      {k:'X_net = XL - XC',v:`${XL.toFixed(2)} - ${XC.toFixed(2)} = ${Xn.toFixed(2)} Ω (${Xn>=0?'حثية':'سعوية'})`,cl:''},
+    ].filter(Boolean)},
+    {t:'الخطوة 2 — الممانعة الكلية',rows:[
+      {k:'|Z_T| = √(R² + X_net²)',v:`√(${R}² + ${Xn.toFixed(1)}²) = ${ZT.toFixed(3)} Ω`,cl:'hi'},
+      {k:'θ = arctan(X_net/R)',v:`arctan(${Xn.toFixed(2)}/${R}) = ${th.toFixed(2)}°`,cl:'hi'},
+      {k:'Z_T',v:`${ZT.toFixed(3)} ∠ ${th.toFixed(2)}° Ω`,cl:'hi'},
+    ]},
+    {t:'الخطوة 3 — التيار',rows:[
+      {k:'E_rms = Em/√2',v:`${Em}/1.414 = ${Erms.toFixed(2)} V`,cl:''},
+      {k:'I_rms = E_rms/|Z_T|',v:`${Erms.toFixed(2)}/${ZT.toFixed(3)} = ${Irms.toFixed(3)} A`,cl:'hi'},
+      {k:'I = I_rms ∠ −θ',v:`${Irms.toFixed(3)} ∠ ${(-th).toFixed(2)}° A`,cl:'hi'},
+      {k:'Im = I_rms × √2',v:`${Im.toFixed(3)} A`,cl:''},
+    ]},
+    isSerial?{t:'الخطوة 4 — الجهود على المكونات',rows:[
+      {k:'V_R = I_rms × R',v:`${Irms.toFixed(3)} × ${R} = ${VR.toFixed(2)} V`,cl:''},
+      XL?{k:'V_L = I_rms × XL',v:`${Irms.toFixed(3)} × ${XL.toFixed(2)} = ${VL.toFixed(2)} V`,cl:''}:null,
+      XC?{k:'V_C = I_rms × XC',v:`${Irms.toFixed(3)} × ${XC.toFixed(2)} = ${VC.toFixed(2)} V`,cl:''}:null,
+      {k:'تحقق: √(V_R²+V_X²)',v:`√(${VR.toFixed(1)}²+${(VL-VC).toFixed(1)}²) = ${Erms.toFixed(2)}V ≈ E_rms ✓`,cl:'res'},
+    ].filter(Boolean)}:null,
+    {t:'الخطوة 5 — الطاقة',rows:[
+      {k:'PF = cos(θ)',v:`cos(${th.toFixed(1)}°) = ${PF.toFixed(4)}`,cl:''},
+      {k:'P = E_rms×I_rms×cos(θ)',v:`${Erms.toFixed(2)}×${Irms.toFixed(3)}×${PF.toFixed(3)} = ${P.toFixed(2)} W`,cl:'hi'},
+      {k:'Q = E_rms×I_rms×sin(θ)',v:`${Q.toFixed(2)} VAR`,cl:''},
+      {k:'S = E_rms × I_rms',v:`${S.toFixed(2)} VA`,cl:'hi'},
+      {k:'نوع الحمل',v:Math.abs(th)<1?'عند الرنين (PF=1)':th>0?'حثي (lagging)':'سعوي (leading)',cl:'res'},
+    ]},
+  ].filter(Boolean);
+
+  document.getElementById('solOut').style.display='block';
+  document.getElementById('solSteps').innerHTML=steps.map(s=>`
+    <div class="step-panel" style="margin-bottom:10px">
+      <div class="step-title">${s.t}</div>
+      ${s.rows.map(r=>`<div class="step-row"><span class="step-key">${r.k}</span><span class="step-val ${r.cl}">${r.v}</span></div>`).join('')}
+    </div>`).join('');
+}
+
+// ===== EXAM =====
+const QDB={
+  e:[
+    {q:'في المقاومة النقية، ما العلاقة بين V وI؟',o:['V يتقدم I بـ 90°','I يتقدم V بـ 90°','V وI متزامنان (θ=0°)','V متأخر عن I بـ 45°'],a:2,ex:'في المقاومة النقية: Z_R=R∠0° → V وI في نفس الطور'},
+    {q:'وحدة الممانعة السعوية X_C هي:',o:['Farad','Henry','أوم (Ω)','Watt'],a:2,ex:'X_C=1/(ωC) تُقاس بالأوم — نفس وحدة المقاومة'},
+    {q:'عند f=0 (DC)، سلوك الملف:',o:['دائرة مفتوحة','ممانعة لانهائية','سلك عادي (X_L=0)','مكثف'],a:2,ex:'X_L=2πfL، عند f=0: X_L=0 → الملف=سلك عادي'},
+    {q:'عند f=0 (DC)، سلوك المكثف:',o:['سلك عادي','دائرة مفتوحة (X_C=∞)','مقاومة صفر','مصدر جهد'],a:1,ex:'X_C=1/(2πfC)، عند f=0: X_C=∞ → دائرة مفتوحة'},
+    {q:'V_rms تساوي:',o:['V_m','V_m/2','V_m/√2','V_m×√2'],a:2,ex:'V_rms=V_m/√2=0.707×V_m — القيمة الفعالة'},
+    {q:'R=3Ω, X_L=4Ω → |Z_T|=؟',o:['7Ω','1Ω','5Ω','12Ω'],a:2,ex:'|Z_T|=√(9+16)=√25=5Ω (مثلث 3-4-5)'},
+  ],
+  m:[
+    {q:'R=3Ω, X_L=4Ω → θ=؟',o:['53.13°','36.87°','45°','90°'],a:0,ex:'θ=arctan(4/3)=53.13° — الجهد يتقدم التيار'},
+    {q:'Z_T=5∠53.13°, E=100V∠0° → I=؟',o:['20A∠53.13°','20A∠-53.13°','500A','0.05A'],a:1,ex:'I=E/Z_T=100∠0°/5∠53.13°=20A∠-53.13°'},
+    {q:'في R-C، التيار بالنسبة للجهد:',o:['متأخر','متقدم','في نفس الطور','لا علاقة'],a:1,ex:'في المكثف I يتقدم V بـ 90°. في R-C: I يتقدم V بزاوية بين 0° و90°'},
+    {q:'PF = cos(θ) = ؟',o:['XL/Z','XC/Z','R/Z','Z/R'],a:2,ex:'PF=cos(θ)=R/|Z_T| — نسبة المقاومة إلى الممانعة'},
+    {q:'القدرة الحقيقية P تحسب من:',o:['EI','EI·cos(θ)','I²Z','EI·sin(θ)'],a:1,ex:'P=EI·cos(θ)=I²R — فقط المقاومة تستهلك طاقة حقيقية'},
+    {q:'V_C بقانون VDR: R=3Ω, X_C=4Ω, E=100V∠0°',o:['80V∠-36.87°','60V∠0°','80V∠+36.87°','100V∠-90°'],a:0,ex:'V_C=(Z_C/Z_T)×E=(4∠-90°/5∠-53.13°)×100=80V∠-36.87°'},
+  ],
+  h:[
+    {q:'شرط الرنين التسلسلي:',o:['R=X_L','X_L=X_C','Z_T أقصاه','PF=0'],a:1,ex:'عند X_L=X_C: Z_T=R (أدنى) → I أقصاه → PF=1'},
+    {q:'R=10Ω, X_L=37.7Ω, X_C=26.5Ω → |Z_T|=؟',o:['15Ω','64.2Ω','10Ω','11.2Ω'],a:0,ex:'X_net=11.2Ω, Z_T=√(100+125.4)=15Ω∠48.16°'},
+    {q:'تردد الرنين: L=50mH, C=100μF',o:['71.2 Hz','12.6 Hz','159 Hz','318 Hz'],a:0,ex:'fr=1/(2π√(0.05×0.0001))≈71.2Hz'},
+    {q:'عند الرنين التوازي، Z_T يكون:',o:['أدنى ممانعة','R فقط','أقصى ممانعة','صفراً'],a:2,ex:'التوازي عند الرنين: Z_T=L/(RC)=أقصى ممانعة'},
+    {q:'معامل الجودة Q يساوي:',o:['R/XL','XL/R','Z/R','R/Z'],a:1,ex:'Q=X_L/R=X_C/R — كبر Q → نطاق ضيق وتضخيم أكبر'},
+    {q:'عند الرنين، V_L =؟',o:['صفر','مساوٍ E','Q×E (قد يتجاوز E)','V_C×2'],a:2,ex:'عند الرنين: V_L=V_C=Q×E — قد يتجاوز جهد المصدر!'},
+  ],
+  x:[
+    {q:'المُقبولية Y تعرّف كـ:',o:['Y=Z²','Y=1/Z','Y=R/Z','Y=Z/R'],a:1,ex:'Y=1/Z=G+jB — تُقاس بالسيمنز (S)'},
+    {q:'في دائرة R-C: I_C/I_R = ؟ عند θ=45°',o:['I_C=I_R','I_C>I_R','I_C<I_R','I_C=0'],a:0,ex:'عند θ=45°: R=X_C → I_C=I_R → I_T=I_R×√2'},
+    {q:'دائرة RLC (R=6Ω, XL=9Ω, XC=17Ω, E=50V∠30°) → V_C=؟',o:['85V∠-6.87°','45V∠-6.87°','50V∠30°','17V∠0°'],a:0,ex:'Z_T=10∠-53.13°, I=5A∠83.13°, V_C=5×17∠(83.13°-90°)=85V∠-6.87°'},
+    {q:'عامل الجودة Q وعرض النطاق BW علاقتهما:',o:['Q وBW متناسبان','Q وBW عكسيان (BW=fr/Q)','لا علاقة','Q=BW'],a:1,ex:'BW=fr/Q — كبر Q → ضيق BW → انتقائية أعلى'},
+    {q:'في دائرة توازية، تيار الفرع L وC عند الرنين:',o:['يساوي I_T','أصغر من I_T','أكبر من I_T بكثير','صفر'],a:2,ex:'عند الرنين التوازي، تيارات L وC كبيرة جداً وتلغي بعضها → I_T صغير'},
+  ]
+};
+let ES={d:'e',qi:0,sc:0,qs:[],ans:false,tm:null,tl:45};
+function startE(d){ES.d=d;ES.qi=0;ES.sc=0;ES.qs=[...QDB[d]].sort(()=>Math.random()-.5).slice(0,6);document.getElementById('eS').style.display='none';document.getElementById('eA').style.display='block';document.getElementById('eR').classList.remove('on');loadQ();}
+function loadQ(){const q=ES.qs[ES.qi],tot=ES.qs.length;ES.ans=false;document.getElementById('qI').textContent=`سؤال ${ES.qi+1} من ${tot}`;document.getElementById('pB').style.width=Math.round(((ES.qi+1)/tot)*100)+'%';document.getElementById('qT').textContent=q.q;document.getElementById('qEx').className='expl';document.getElementById('nxB').className='nxb';const tm={e:45,m:60,h:75,x:90};ES.tl=tm[ES.d];clearInterval(ES.tm);const te=document.getElementById('tEl');te.className='tim';ES.tm=setInterval(()=>{ES.tl--;te.textContent='⏱ '+ES.tl;if(ES.tl<=8)te.className='tim urg';if(ES.tl<=0){clearInterval(ES.tm);if(!ES.ans)revA(-1);}},1000);const ob=document.getElementById('qO');ob.innerHTML='';q.o.forEach((o,i)=>{const b=document.createElement('button');b.className='opt';b.textContent=o;b.onclick=()=>revA(i);ob.appendChild(b);});}
+function revA(sel){if(ES.ans)return;ES.ans=true;clearInterval(ES.tm);const q=ES.qs[ES.qi];if(sel===q.a)ES.sc++;document.querySelectorAll('.opt').forEach((b,i)=>{if(i===q.a)b.classList.add('cor');else if(i===sel)b.classList.add('wrg');b.disabled=true;});document.getElementById('qEx').textContent='💡 '+q.ex;document.getElementById('qEx').className='expl on';document.getElementById('nxB').className='nxb on';}
+function nextQ(){ES.qi++;if(ES.qi>=ES.qs.length)showR();else loadQ();}
+function showR(){document.getElementById('eA').style.display='none';document.getElementById('eR').classList.add('on');const s=ES.sc,t=ES.qs.length;document.getElementById('rBig').textContent=s+'/'+t;const p=s/t;document.getElementById('rMsg').textContent=p>=.85?'ممتاز! إتقان تام لـ AC Circuits 🎉':p>=.65?'جيد جداً، راجع الرنين 👍':'راجع Chapter 15 مجدداً 📚';}
+function resetE(){document.getElementById('eS').style.display='block';document.getElementById('eA').style.display='none';document.getElementById('eR').classList.remove('on');}
+
+// ===== AI CHAT =====
+let CH=[];
+async function sMsg(){const el=document.getElementById('cIn');const t=el.value.trim();if(!t)return;el.value='';addM('u',t);CH.push({role:'user',content:t});document.getElementById('snB').disabled=true;const tid=addT();
+try{const r=await fetch('/.netlify/functions/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:CH,subject:'تحليل دوائر التيار المتناوب AC Circuits'})});const d=await r.json();const rep=d.content||'خطأ';rmT(tid);addM('a',rep);CH.push({role:'assistant',content:rep});}catch{rmT(tid);addM('a','⚠️ خطأ في الاتصال. تأكد من GROQ_API_KEY في Netlify.');}
+document.getElementById('snB').disabled=false;}
+function sSug(btn){document.getElementById('cIn').value=btn.textContent;sMsg();}
+function addM(r,t){const d=document.getElementById('msgs');const div=document.createElement('div');div.className='msg '+r;div.innerHTML=`<div class="mm">${r==='u'?'👤 أنت':'⚡ AI'}</div><div class="bub">${t.replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<b>$1</b>')}</div>`;d.appendChild(div);d.scrollTop=d.scrollHeight;}
+function addT(){const d=document.getElementById('msgs');const div=document.createElement('div');div.className='msg a';const id='t'+Date.now();div.id=id;div.innerHTML='<div class="mm">⚡ يفكر...</div><div class="bub"><div class="tds"><span class="td"></span><span class="td"></span><span class="td"></span></div></div>';d.appendChild(div);d.scrollTop=d.scrollHeight;return id;}
+function rmT(id){const e=document.getElementById(id);if(e)e.remove();}
+function clrC(){CH=[];document.getElementById('msgs').innerHTML='<div class="msg a"><div class="mm">⚡ AI</div><div class="bub">تم المسح. ما سؤالك؟</div></div>';}
+
+// init
+window.addEventListener('resize',()=>{if(document.getElementById('pg-lab').classList.contains('on')){updSim();drawPhasor();drawFR();}});
+setTimeout(updSim,200);setTimeout(drawPhasor,200);setTimeout(drawFR,200);
+</script>
+</body>
+</html>
