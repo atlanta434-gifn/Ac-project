@@ -24,7 +24,7 @@ export default async (req: Request) => {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      model: 'llama3-70b-8192',
+      model: 'llama-3.3-70b-versatile',
       messages: [systemMessage, ...(messages || [])],
       max_tokens: 1024,
       temperature: 0.7,
