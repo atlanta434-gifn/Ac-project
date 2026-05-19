@@ -960,7 +960,7 @@ function resetE(){document.getElementById('eS').style.display='block';document.g
 // ===== AI CHAT =====
 let CH=[];
 async function sMsg(){const el=document.getElementById('cIn');const t=el.value.trim();if(!t)return;el.value='';addM('u',t);CH.push({role:'user',content:t});document.getElementById('snB').disabled=true;const tid=addT();
-try{const r=await fetch('/.netlify/functions/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:CH,subject:'تحليل دوائر التيار المتناوب AC Circuits'})});const d=await r.json();const rep=d.content||'خطأ';rmT(tid);addM('a',rep);CH.push({role:'assistant',content:rep});}catch{rmT(tid);addM('a','⚠️ خطأ في الاتصال. تأكد من GROQ_API_KEY في Netlify.');}
+try{const r=await fetch('/.netlify/functions/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:CH,subject:'تحليل دوائر التيار المتناوب AC Circuits'})});const d=await r.json();if(d.error){rmT(tid);addM('a','⚠️ '+d.error);}else{const rep=d.content||'لم يتم استلام رد.';rmT(tid);addM('a',rep);CH.push({role:'assistant',content:rep});}}catch(e){rmT(tid);addM('a','⚠️ خطأ في الاتصال: '+(e&&e.message?e.message:'تعذّر الوصول إلى الخادم.'));}
 document.getElementById('snB').disabled=false;}
 function sSug(btn){document.getElementById('cIn').value=btn.textContent;sMsg();}
 function addM(r,t){const d=document.getElementById('msgs');const div=document.createElement('div');div.className='msg '+r;div.innerHTML=`<div class="mm">${r==='u'?'👤 أنت':'⚡ AI'}</div><div class="bub">${t.replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<b>$1</b>')}</div>`;d.appendChild(div);d.scrollTop=d.scrollHeight;}
